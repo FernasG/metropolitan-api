@@ -4,6 +4,8 @@ services:
   metropolitan-api:
     container_name: metropolitan-api
     image: metropolitan-api:latest
+    env_file:
+      - .env
     build: 
       context: .
     environment:
