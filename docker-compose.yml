@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  metropolitan-api:
+    container_name: metropolitan-api
+    image: metropolitan-api:latest
+    build: 
+      context: .
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ${PWD}:/app
+    ports:
+      - 3000:3000

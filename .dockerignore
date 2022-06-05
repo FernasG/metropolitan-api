@@ -1,0 +1,17 @@
+# Application
+node_modules/
+dist/
+npm-debug.log
+
+# VCS files
+.git*
+
+# Docker
+.dockerignore
+.hadolint.yml
+Dockerfile*
+docker-compose*
+
+# Other
+Makefile
+README.md
