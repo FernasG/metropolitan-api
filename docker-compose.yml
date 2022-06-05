@@ -12,3 +12,22 @@ services:
       - ${PWD}:/app
     ports:
       - 3000:3000
+    depends_on:
+      - psql-db
+    networks:
+      - metropolitan-network
+    
+  psql-db:
+    container_name: psql-db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=metropolitan
+      - POSTGRES_PASSWORD=123456
+    networks:
+      - metropolitan-network
+
+networks:
+  metropolitan-network:
