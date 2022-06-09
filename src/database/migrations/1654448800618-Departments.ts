@@ -16,11 +16,11 @@ export class Departments1654448800618 implements MigrationInterface {
                     type: 'varchar'
                 }
             ]
-        }))
+        }));
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('departments')
+        await queryRunner.dropTable('departments');
     }
 
 }

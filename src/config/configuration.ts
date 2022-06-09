@@ -5,4 +5,4 @@ export default () => ({
         entities: ['dist/**/*.entity{.ts,.js}']
     },
     api_url: process.env.METROPOLITAN_URL as string
-})
+});
