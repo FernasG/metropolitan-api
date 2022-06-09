@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@services": ["./src/services"]
+      "@database/*": ["./src/database/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
