@@ -11,16 +11,16 @@ export class Objects {
     @Column({ type: "varchar" })
     accessionNumber: string;
 
-    @Column({ type: "varchar", length: 5 })
+    @Column({ type: "varchar", length: 25 })
     accessionYear: string;
 
     @Column({ type: "boolean", default: false })
     isPublicDomain: boolean;
 
-    @Column({ type: "varchar", length: 5, nullable: true })
+    @Column({ type: "varchar", nullable: true })
     primaryImage: string;
 
-    @Column({ type: "varchar", length: 5, nullable: true })
+    @Column({ type: "varchar", nullable: true })
     primaryImageSmall: string;
 
     @Column({ type: "json", nullable: true })

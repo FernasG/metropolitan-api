@@ -6,12 +6,34 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class SetupService {
-    constructor(
-        private readonly httpService: HttpService,
-        private readonly connection: DataSource
-    ) { }
+    constructor(private readonly httpService: HttpService, private readonly connection: DataSource) { }
 
     async setup() {
+        // await this.syncDepartments();
+        // await this.syncObjects();
+
+        return {};
+    }
+
+    private async syncDepartments() {
+        const response = await firstValueFrom(this.httpService.get('/departments'))
+            .then(({ data }) => { return data; })
+            .catch(err => null);
+
+        if (!response) throw new InternalServerErrorException('Erro ao buscar `departments` na API.');
+
+        const { departments } = response;
+
+        for (const department of departments) {
+            const { departmentId, displayName } = department;
+
+            const newDepartment = await this.connection.getRepository(Departments).save({ departmentId, displayName });
+
+            if (!newDepartment) throw new InternalServerErrorException('Erro ao inserir na tabela `departments`');
+        }
+    }
+
+    private async syncObjects() {
         const response = await firstValueFrom(this.httpService.get('/objects'))
             .then(({ data }) => { return data; })
             .catch(err => null);
@@ -42,43 +64,25 @@ export class SetupService {
 
             if (constituents && constituents.length > 0) {
                 for (const constituent of constituents) {
-                    const { constituentID } = constituent;
-                    const author = await this.connection.getRepository(Constituents).findOne({ where: { constituentID } });
-
-                    if (!author) {
-                        const { constituentULAN_URL, constituentWikidata_URL, gender, name, role } = constituent;
-                        const insertResult = await this.connection.getRepository(Constituents).insert({
-                            constituentID, constituentULAN_URL, constituentWikidata_URL, gender, name, role
-                        });
-
-                        if (!insertResult) continue;
-                    }
-
-                    await this.connection.getRepository(ObjectsConstituents).insert({ objectID: objectItem.objectID, constituentID });
+                    await this.syncConstituent(constituent, objectItem.objectID);
                 }
             }
         }
-
-        const count = await this.connection.getRepository(Objects).count();
-
-        return { total, count };
     }
 
-    private async syncDepartments() {
-        const response = await firstValueFrom(this.httpService.get('/departments'))
-            .then(({ data }) => { return data; })
-            .catch(err => null);
+    private async syncConstituent(constituent: Constituents, objectID: number) {
+        const { constituentID } = constituent;
+        const author = await this.connection.getRepository(Constituents).findOne({ where: { constituentID } });
 
-        if (!response) throw new InternalServerErrorException('Erro ao buscar `departments` na API.');
+        if (!author) {
+            const { constituentULAN_URL, constituentWikidata_URL, gender, name, role } = constituent;
+            const newconstituent = await this.connection.getRepository(Constituents).save({
+                constituentID, constituentULAN_URL, constituentWikidata_URL, gender, name, role
+            });
 
-        const { departments } = response;
-
-        for (const department of departments) {
-            const { departmentId, displayName } = department;
-
-            const newDepartment = await this.connection.getRepository(Departments).save({ departmentId, displayName });
-
-            if (!newDepartment) throw new InternalServerErrorException('Erro ao inserir na tabela `departments`');
+            if (!newconstituent) return false;
         }
+
+        await this.connection.getRepository(ObjectsConstituents).insert({ objectID, constituentID });
     }
 }

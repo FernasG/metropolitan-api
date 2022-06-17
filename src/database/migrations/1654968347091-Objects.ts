@@ -23,7 +23,7 @@ export class Objects1654968347091 implements MigrationInterface {
                 {
                     name: 'accessionYear',
                     type: 'varchar',
-                    length: "5"
+                    length: "25"
                 },
                 {
                     name: 'isPublicDomain',
