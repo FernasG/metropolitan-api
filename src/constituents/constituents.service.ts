@@ -9,14 +9,14 @@ export class ConstituentsService {
 
     async list(query: FilterConstituentsDto) {
         const { per_page, page } = query;
-        const paging = (page && parseInt(page) >= 1) ? parseInt(page) - 1 : 0;
+        const paging = (page && parseInt(page) >= 1) ? parseInt(page) : 0;
 
         const take = (per_page && parseInt(per_page) <= 100) ? parseInt(per_page) : 100;
-        const skip = (page && paging >= 1) ? paging * take : null;
+        const skip = (paging - 1 >= 1) ? (paging - 1) * take : null;
 
         const constituents = await this.connection.getRepository(Constituents).find({ skip, take, order: { constituentID: 'ASC' } });
 
-        const next_page = `/constituents?per_page=${take}&page=${paging + 2}`;
+        const next_page = `/constituents?per_page=${take}&page=${paging + 1}`;
 
         return { constituents, next_page };
     }

@@ -9,14 +9,14 @@ export class ObjectsService {
 
     async list(query: FilterObjectsDto) {
         const { per_page, page } = query;
-        const paging = (page && parseInt(page) >= 1) ? parseInt(page) - 1 : 0;
+        const paging = (page && parseInt(page) >= 1) ? parseInt(page) : 0;
 
         const take = (per_page && parseInt(per_page) <= 100) ? parseInt(per_page) : 100;
-        const skip = (page && paging >= 1) ? paging * take : null;
+        const skip = (paging - 1 >= 1) ? (paging - 1) * take : null;
 
         const objects = await this.connection.getRepository(Objects).find({ skip, take, order: { objectID: 'ASC' } });
 
-        const next_page = `/objects?per_page=${take}&page=${paging + 2}`;
+        const next_page = `/objects?per_page=${take}&page=${paging + 1}`;
 
         return { objects, next_page };
     }
