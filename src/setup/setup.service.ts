@@ -9,8 +9,8 @@ export class SetupService {
     constructor(private readonly httpService: HttpService, private readonly connection: DataSource) { }
 
     async setup() {
-        // await this.syncDepartments();
-        // await this.syncObjects();
+        await this.syncDepartments();
+        await this.syncObjects();
 
         return {};
     }
@@ -40,7 +40,7 @@ export class SetupService {
 
         if (!response) throw new InternalServerErrorException('Erro ao buscar `objects` na API.');
 
-        const { objectIDs, total } = response;
+        const { objectIDs } = response;
 
         for (const id of objectIDs) {
             const object = await firstValueFrom(this.httpService.get(`/objects/${id}`))
