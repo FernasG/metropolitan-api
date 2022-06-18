@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
+import { Constituents } from "./constituents.entity";
 
 @Entity()
 export class Objects {
@@ -100,4 +101,7 @@ export class Objects {
 
     @Column({ type: "varchar", nullable: true })
     GalleryNumber: string;
+
+    @ManyToMany(() => Constituents)
+    Constituents: Constituents[];
 }
